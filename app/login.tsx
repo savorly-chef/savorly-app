@@ -1,8 +1,9 @@
+import { useState } from 'react'
 import { View, StyleSheet, Pressable } from 'react-native'
 import { useRouter } from 'expo-router'
 import { Ionicons } from '@expo/vector-icons'
-import { useState } from 'react'
 
+import { useThemeColor } from '@/hooks/useThemeColor'
 import { Colors } from '@/constants/Colors'
 import { ThemedText } from '@/components/ThemedText'
 import { ThemedInput } from '@/components/ui/ThemedInput'
@@ -50,6 +51,7 @@ export default function Login() {
           secureTextEntry
           style={styles.input}
         />
+        <View style={[styles.divider, { backgroundColor: useThemeColor('icon') }]}></View>
         <Pressable
           style={[styles.button, isLoading && styles.buttonDisabled]}
           onPress={handleLogin}
@@ -81,7 +83,7 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   input: {
-    marginBottom: 16,
+    marginTop: 16,
     paddingVertical: 20,
     paddingHorizontal: 16,
     height: 52
@@ -101,5 +103,10 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     fontWeight: 'bold'
+  },
+  divider: {
+    width: '40%',
+    height: 1,
+    marginVertical: 28
   }
 })

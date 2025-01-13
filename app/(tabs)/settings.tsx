@@ -1,6 +1,7 @@
 import { StyleSheet, View, ScrollView, Pressable } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
 import { useState } from 'react'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import { ThemedText } from '@/components/ThemedText'
 import { useThemeStore } from '@/store/theme'
@@ -10,6 +11,7 @@ export default function SettingsScreen() {
   const { theme, toggleTheme } = useThemeStore()
   const [isToggling, setIsToggling] = useState(false)
   const isDark = theme === 'dark'
+  const insets = useSafeAreaInsets()
 
   const handleThemeToggle = async () => {
     try {
@@ -23,7 +25,7 @@ export default function SettingsScreen() {
   }
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView style={[styles.container, { top: insets.top - 6 }]}>
       <View style={styles.section}>
         <ThemedText style={styles.sectionTitle}>Appearance</ThemedText>
 

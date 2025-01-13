@@ -8,17 +8,11 @@ export type ThemedInputProps = TextInputProps & {
   type?: 'default' | 'large'
 }
 
-export function ThemedInput({
-  style,
-  lightColor,
-  darkColor,
-  type = 'default',
-  placeholderTextColor,
-  ...rest
-}: ThemedInputProps) {
-  const color = useThemeColor({ light: lightColor, dark: darkColor }, 'text')
-  const backgroundColor = useThemeColor({ light: Colors.light.background, dark: Colors.dark.background }, 'background')
-  const borderColor = useThemeColor({ light: Colors.light.icon, dark: Colors.dark.icon }, 'icon')
+export function ThemedInput({ style, lightColor, darkColor, type = 'default', ...rest }: ThemedInputProps) {
+  const color = useThemeColor('text')
+  const backgroundColor = useThemeColor('background')
+  const borderColor = useThemeColor('border')
+  const placeholderTextColor = useThemeColor('icon')
 
   return (
     <TextInput

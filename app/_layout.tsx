@@ -1,9 +1,10 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native'
+import { useEffect } from 'react'
+import * as SplashScreen from 'expo-splash-screen'
 import { useFonts } from 'expo-font'
 import { Stack } from 'expo-router'
-import * as SplashScreen from 'expo-splash-screen'
 import { StatusBar } from 'expo-status-bar'
-import { useEffect } from 'react'
+import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import 'react-native-reanimated'
 
 import { useColorScheme } from '@/hooks/useColorScheme'
@@ -15,6 +16,7 @@ SplashScreen.preventAutoHideAsync()
 
 export default function RootLayout() {
   const colorScheme = useColorScheme()
+  const insets = useSafeAreaInsets()
   const initTheme = useThemeStore(state => state.initTheme)
   useProtectedRoute()
 
@@ -42,12 +44,17 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name='(tabs)' options={{ headerShown: false }} />
-        <Stack.Screen name='login' options={{ headerShown: false }} />
+      <Stack
+        screenOptions={{
+          headerShown: false,
+          contentStyle: { backgroundColor: colorScheme === 'dark' ? '#000' : '#fff' }
+        }}
+      >
+        <Stack.Screen name='(tabs)' />
+        <Stack.Screen name='login' />
         <Stack.Screen name='+not-found' />
       </Stack>
-      <StatusBar style='auto' />
+      <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
     </ThemeProvider>
   )
 }

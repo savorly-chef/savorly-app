@@ -1,52 +1,51 @@
-import { View, TouchableOpacity, StyleSheet } from 'react-native'
+import { View, TouchableOpacity, StyleSheet, Platform } from 'react-native'
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs'
-import { BlurView } from 'expo-blur'
 
 import { Colors } from '@/constants/Colors'
 import { useColorScheme } from '@/hooks/useColorScheme'
+import { useThemeColor } from '@/hooks/useThemeColor'
 import { ThemedText } from '../ThemedText'
 
 export function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
   const colorScheme = useColorScheme()
+  const backgroundColor = useThemeColor('tabBG')
   const isDark = colorScheme === 'dark'
 
   return (
-    <BlurView intensity={80} tint={isDark ? 'dark' : 'light'} style={styles.blurContainer}>
-      <View style={[styles.container, isDark && styles.containerDark]}>
-        {state.routes.map((route, index) => {
-          const { options } = descriptors[route.key]
-          const label = options.title ?? route.name
-          const isFocused = state.index === index
+    <View style={[styles.container, isDark && styles.containerDark, { backgroundColor }]}>
+      {state.routes.map((route, index) => {
+        const { options } = descriptors[route.key]
+        const label = options.title ?? route.name
+        const isFocused = state.index === index
 
-          const onPress = () => {
-            const event = navigation.emit({
-              type: 'tabPress',
-              target: route.key,
-              canPreventDefault: true
-            })
+        const onPress = () => {
+          const event = navigation.emit({
+            type: 'tabPress',
+            target: route.key,
+            canPreventDefault: true
+          })
 
-            if (!isFocused && !event.defaultPrevented) {
-              navigation.navigate(route.name)
-            }
+          if (!isFocused && !event.defaultPrevented) {
+            navigation.navigate(route.name)
           }
+        }
 
-          const color = isFocused ? Colors[colorScheme ?? 'light'].tint : Colors[colorScheme ?? 'light'].tabIconDefault
+        const color = isFocused ? Colors[colorScheme ?? 'light'].tint : Colors[colorScheme ?? 'light'].tabIconDefault
 
-          return (
-            <TouchableOpacity
-              key={route.key}
-              onPress={onPress}
-              style={styles.tab}
-              accessibilityRole='button'
-              accessibilityState={isFocused ? { selected: true } : {}}
-            >
-              {options.tabBarIcon?.({ focused: isFocused, color, size: 28 })}
-              <ThemedText style={[styles.label, { color }]}>{label}</ThemedText>
-            </TouchableOpacity>
-          )
-        })}
-      </View>
-    </BlurView>
+        return (
+          <TouchableOpacity
+            key={route.key}
+            onPress={onPress}
+            style={styles.tab}
+            accessibilityRole='button'
+            accessibilityState={isFocused ? { selected: true } : {}}
+          >
+            {options.tabBarIcon?.({ focused: isFocused, color, size: 28 })}
+            <ThemedText style={[styles.label, { color }]}>{label}</ThemedText>
+          </TouchableOpacity>
+        )
+      })}
+    </View>
   )
 }
 
@@ -61,8 +60,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     borderTopWidth: StyleSheet.hairlineWidth,
     borderTopColor: 'rgba(0, 0, 0, 0.1)',
-    paddingBottom: 26,
-    paddingTop: 12
+    paddingTop: 12,
+    paddingBottom: Platform.select({
+      ios: 28, // Extends under home indicator
+      android: 16
+    })
   },
   containerDark: {
     borderTopColor: 'rgba(255, 255, 255, 0.1)'
