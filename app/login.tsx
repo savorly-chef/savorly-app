@@ -1,122 +1,104 @@
-import { useState } from 'react'
-import { View, StyleSheet, Pressable, Platform } from 'react-native'
+import { View, StyleSheet, Platform, Pressable } from 'react-native'
 import { useRouter } from 'expo-router'
 import * as AppleAuthentication from 'expo-apple-authentication'
+import { Ionicons } from '@expo/vector-icons'
 
-import { useThemeColor } from '@/hooks/useThemeColor'
 import { Colors } from '@/constants/Colors'
 import { ThemedText } from '@/components/ThemedText'
-import { ThemedInput } from '@/components/ui/ThemedInput'
-import { useAuthStore } from '@/store/auth'
+import { useColorScheme } from '@/hooks/useColorScheme'
 import LoginTemplate from '@/components/LoginTemplate'
 
 export default function Login() {
   const router = useRouter()
-  const login = useAuthStore(state => state.login)
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
+  const theme = useColorScheme() ?? 'light'
 
-  const handleLogin = async () => {
+  const handleAppleSignIn = async () => {
     try {
-      setIsLoading(true)
-      await login(email, password)
+      const credential = await AppleAuthentication.signInAsync({
+        requestedScopes: [
+          AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
+          AppleAuthentication.AppleAuthenticationScope.EMAIL
+        ]
+      })
+      // TODO: Handle successful sign in
+      console.log('AUTH', JSON.stringify(credential))
       router.replace('/(tabs)')
-    } catch (error) {
-      console.error('Login failed:', error)
-    } finally {
-      setIsLoading(false)
+    } catch (e: any) {
+      if (e.code === 'ERR_REQUEST_CANCELED') {
+        console.log('Sign in canceled')
+      } else {
+        console.error('Sign in error:', e)
+      }
     }
   }
 
-  if (Platform.OS === 'ios') {
-    return (
-      <LoginTemplate>
-        <AppleAuthentication.AppleAuthenticationButton
-          buttonType={AppleAuthentication.AppleAuthenticationButtonType.SIGN_IN}
-          buttonStyle={AppleAuthentication.AppleAuthenticationButtonStyle.BLACK}
-          cornerRadius={5}
-          style={styles.button}
-          onPress={async () => {
-            try {
-              const credential = await AppleAuthentication.signInAsync({
-                requestedScopes: [
-                  AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
-                  AppleAuthentication.AppleAuthenticationScope.EMAIL
-                ]
-              })
-
-              console.log('AUTH', JSON.stringify(credential))
-            } catch (e: any) {
-              if (e.code === 'ERR_REQUEST_CANCELED') {
-                // TODO: Send back to index view
-                // handle that the user canceled the sign-in flow
-              } else {
-                // TODO: Display error message
-                // handle other errors
-              }
-            }
-          }}
-        />
-      </LoginTemplate>
-    )
-  } else {
-    return (
-      <LoginTemplate>
-        <ThemedInput
-          placeholder='Email'
-          value={email}
-          onChangeText={setEmail}
-          autoCapitalize='none'
-          keyboardType='email-address'
-          style={styles.input}
-        />
-        <ThemedInput
-          placeholder='Password'
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry
-          style={styles.input}
-        />
-        <View style={[styles.divider, { backgroundColor: useThemeColor('icon') }]}></View>
-        <Pressable
-          style={[styles.button, isLoading && styles.buttonDisabled]}
-          onPress={handleLogin}
-          disabled={isLoading}
-        >
-          <ThemedText style={styles.buttonText}>{isLoading ? 'Logging in...' : 'Login'}</ThemedText>
-        </Pressable>
-      </LoginTemplate>
-    )
-  }
+  return (
+    <LoginTemplate>
+      <View style={styles.buttonGroup}>
+        {Platform.OS === 'ios' ? (
+          <View
+            style={[
+              styles.buttonContainer,
+              { borderWidth: theme === 'light' ? 0 : 1, backgroundColor: theme === 'light' ? 'black' : 'transparent' }
+            ]}
+          >
+            <AppleAuthentication.AppleAuthenticationButton
+              buttonType={AppleAuthentication.AppleAuthenticationButtonType.SIGN_IN}
+              buttonStyle={AppleAuthentication.AppleAuthenticationButtonStyle.BLACK}
+              cornerRadius={8}
+              style={styles.button}
+              onPress={handleAppleSignIn}
+            />
+          </View>
+        ) : (
+          <Pressable
+            style={[styles.socialButton, { backgroundColor: '#4285F4' }]}
+            onPress={() => console.log('Google Sign In - To be implemented')}
+          >
+            <Ionicons name='logo-google' size={24} color='#fff' style={styles.socialIcon} />
+            <ThemedText style={styles.socialButtonText}>Continue with Google</ThemedText>
+          </Pressable>
+        )}
+      </View>
+    </LoginTemplate>
+  )
 }
 
 const styles = StyleSheet.create({
-  input: {
-    marginTop: 16,
-    paddingVertical: 20,
-    paddingHorizontal: 16,
-    height: 52
+  buttonGroup: {
+    width: '100%',
+    gap: 16
   },
+
+  buttonContainer: {
+    width: '100%',
+    borderRadius: 8,
+    padding: 4,
+    borderColor: Colors.light.divider
+  },
+
   button: {
     width: '100%',
-    height: 48,
-    backgroundColor: Colors.light.tint,
-    borderRadius: 8,
+    height: 48
+  },
+
+  socialButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
     justifyContent: 'center',
-    alignItems: 'center'
+    width: '100%',
+    height: 48,
+    borderRadius: 8,
+    backgroundColor: Colors.light.tint
   },
-  buttonDisabled: {
-    opacity: 0.7
+
+  socialIcon: {
+    marginRight: 12
   },
-  buttonText: {
+
+  socialButtonText: {
     color: '#fff',
     fontSize: 16,
-    fontWeight: 'bold'
-  },
-  divider: {
-    width: '40%',
-    height: 1,
-    marginVertical: 28
+    fontWeight: '600'
   }
 })
