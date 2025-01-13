@@ -25,8 +25,7 @@ export function ThemedInput({
       style={[
         { color, backgroundColor, borderColor },
         styles.base,
-        type === 'default' ? styles.default : undefined,
-        type === 'large' ? styles.large : undefined,
+        type === 'large' ? styles.large : styles.default,
         style
       ]}
       placeholderTextColor={placeholderTextColor || borderColor}

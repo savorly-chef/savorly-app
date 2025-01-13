@@ -81,7 +81,10 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   input: {
-    marginBottom: 16
+    marginBottom: 16,
+    paddingVertical: 20,
+    paddingHorizontal: 16,
+    height: 52
   },
   button: {
     width: '100%',
