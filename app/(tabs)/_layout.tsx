@@ -3,7 +3,7 @@ import { StyleSheet } from 'react-native'
 import { Tabs } from 'expo-router'
 import { Ionicons } from '@expo/vector-icons'
 
-import { CustomTabBar } from '@/components/ui/CustomTabBar'
+import { CustomTabBar } from '@/components/CustomTabBar'
 
 export default function TabLayout() {
   return (

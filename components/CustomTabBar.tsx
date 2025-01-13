@@ -4,7 +4,7 @@ import { BottomTabBarProps } from '@react-navigation/bottom-tabs'
 import { Colors } from '@/constants/Colors'
 import { useColorScheme } from '@/hooks/useColorScheme'
 import { useThemeColor } from '@/hooks/useThemeColor'
-import { ThemedText } from '../ThemedText'
+import { ThemedText } from './ThemedText'
 
 export function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
   const colorScheme = useColorScheme()

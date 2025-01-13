@@ -39,7 +39,10 @@ export default function Login() {
           <View
             style={[
               styles.buttonContainer,
-              { borderWidth: theme === 'light' ? 0 : 1, backgroundColor: theme === 'light' ? 'black' : 'transparent' }
+              {
+                borderWidth: theme === 'light' ? 0 : 1,
+                backgroundColor: theme === 'light' ? 'black' : 'transparent'
+              }
             ]}
           >
             <AppleAuthentication.AppleAuthenticationButton
