@@ -85,20 +85,25 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center'
   },
+
   pressed: {
     opacity: 0.7
   },
+
   text: {
     fontWeight: '600'
   },
+
   small: {
     paddingHorizontal: 12,
     paddingVertical: 6
   },
+
   medium: {
     paddingHorizontal: 16,
     paddingVertical: 8
   },
+
   large: {
     paddingHorizontal: 20,
     paddingVertical: 12
