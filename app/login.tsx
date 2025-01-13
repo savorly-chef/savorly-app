@@ -1,13 +1,14 @@
 import { useState } from 'react'
-import { View, StyleSheet, Pressable } from 'react-native'
+import { View, StyleSheet, Pressable, Platform } from 'react-native'
 import { useRouter } from 'expo-router'
-import { Ionicons } from '@expo/vector-icons'
+import * as AppleAuthentication from 'expo-apple-authentication'
 
 import { useThemeColor } from '@/hooks/useThemeColor'
 import { Colors } from '@/constants/Colors'
 import { ThemedText } from '@/components/ThemedText'
 import { ThemedInput } from '@/components/ui/ThemedInput'
 import { useAuthStore } from '@/store/auth'
+import LoginTemplate from '@/components/LoginTemplate'
 
 export default function Login() {
   const router = useRouter()
@@ -28,14 +29,40 @@ export default function Login() {
     }
   }
 
-  return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Ionicons name='restaurant-outline' size={64} color={Colors.light.tint} />
-        <ThemedText style={styles.title}>Welcome to Savorly</ThemedText>
-      </View>
+  if (Platform.OS === 'ios') {
+    return (
+      <LoginTemplate>
+        <AppleAuthentication.AppleAuthenticationButton
+          buttonType={AppleAuthentication.AppleAuthenticationButtonType.SIGN_IN}
+          buttonStyle={AppleAuthentication.AppleAuthenticationButtonStyle.BLACK}
+          cornerRadius={5}
+          style={styles.button}
+          onPress={async () => {
+            try {
+              const credential = await AppleAuthentication.signInAsync({
+                requestedScopes: [
+                  AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
+                  AppleAuthentication.AppleAuthenticationScope.EMAIL
+                ]
+              })
 
-      <View style={styles.content}>
+              console.log('AUTH', JSON.stringify(credential))
+            } catch (e: any) {
+              if (e.code === 'ERR_REQUEST_CANCELED') {
+                // TODO: Send back to index view
+                // handle that the user canceled the sign-in flow
+              } else {
+                // TODO: Display error message
+                // handle other errors
+              }
+            }
+          }}
+        />
+      </LoginTemplate>
+    )
+  } else {
+    return (
+      <LoginTemplate>
         <ThemedInput
           placeholder='Email'
           value={email}
@@ -59,29 +86,12 @@ export default function Login() {
         >
           <ThemedText style={styles.buttonText}>{isLoading ? 'Logging in...' : 'Login'}</ThemedText>
         </Pressable>
-      </View>
-    </View>
-  )
+      </LoginTemplate>
+    )
+  }
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    justifyContent: 'center'
-  },
-  header: {
-    alignItems: 'center',
-    marginBottom: 48
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginTop: 16
-  },
-  content: {
-    alignItems: 'center'
-  },
   input: {
     marginTop: 16,
     paddingVertical: 20,
