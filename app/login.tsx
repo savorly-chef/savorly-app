@@ -25,9 +25,10 @@ export default function Login() {
       router.replace('/(tabs)')
     } catch (e: any) {
       if (e.code === 'ERR_REQUEST_CANCELED') {
+        // TODO: Send back to login screen if not already there
         console.log('Sign in canceled')
       } else {
-        console.error('Sign in error:', e)
+        // Do nothing
       }
     }
   }
