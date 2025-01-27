@@ -3,31 +3,26 @@ import * as SplashScreen from 'expo-splash-screen'
 import { useFonts } from 'expo-font'
 import { Stack } from 'expo-router'
 import { StatusBar } from 'expo-status-bar'
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { DefaultTheme, ThemeProvider } from '@react-navigation/native'
+import { SafeAreaProvider } from 'react-native-safe-area-context'
 import 'react-native-reanimated'
 
-import { useColorScheme } from '@/hooks/useColorScheme'
 import { useProtectedRoute } from '@/components/auth/RequireAuth'
-import { useThemeStore } from '@/store/theme'
+import { Colors } from '@/constants/Colors'
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync()
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme()
-  const insets = useSafeAreaInsets()
-  const initTheme = useThemeStore(state => state.initTheme)
   useProtectedRoute()
 
   const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf')
+    Roboto: require('../assets/fonts/Roboto-VariableFont_wdth,wght.ttf')
   })
 
   useEffect(() => {
     const init = async () => {
       try {
-        await initTheme()
         if (loaded) {
           await SplashScreen.hideAsync()
         }
@@ -43,18 +38,20 @@ export default function RootLayout() {
   }
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack
-        screenOptions={{
-          headerShown: false,
-          contentStyle: { backgroundColor: colorScheme === 'dark' ? '#000' : '#fff' }
-        }}
-      >
-        <Stack.Screen name='(tabs)' />
-        <Stack.Screen name='login' />
-        <Stack.Screen name='+not-found' />
-      </Stack>
-      <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
-    </ThemeProvider>
+    <SafeAreaProvider>
+      <ThemeProvider value={DefaultTheme}>
+        <Stack
+          screenOptions={{
+            headerShown: false,
+            contentStyle: { backgroundColor: Colors.gray['00'] }
+          }}
+        >
+          <Stack.Screen name='(tabs)' />
+          <Stack.Screen name='login' />
+          <Stack.Screen name='+not-found' />
+        </Stack>
+        <StatusBar style='dark' />
+      </ThemeProvider>
+    </SafeAreaProvider>
   )
 }

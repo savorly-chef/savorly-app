@@ -1,13 +1,11 @@
 import React from 'react'
-import { StyleSheet } from 'react-native'
 import { Tabs } from 'expo-router'
 import { Ionicons } from '@expo/vector-icons'
 
-import { CustomTabBar } from '@/components/CustomTabBar'
+import { CustomTabBar } from '@/components/ui/CustomTabBar'
 
 export default function TabLayout() {
   return (
-    // <ScrollView style={styles.container}>
     <Tabs
       screenOptions={{
         headerShown: false
@@ -43,13 +41,5 @@ export default function TabLayout() {
         }}
       />
     </Tabs>
-    // </ScrollView>
   )
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    height: '100%'
-  }
-})

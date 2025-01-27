@@ -4,17 +4,12 @@ import * as AppleAuthentication from 'expo-apple-authentication'
 import { useState } from 'react'
 
 import { Colors } from '@/constants/Colors'
-import { useColorScheme } from '@/hooks/useColorScheme'
 import LoginTemplate from '@/components/LoginTemplate'
-import { ThemedButton } from '@/components/ThemedButton'
-import { useThemeColor } from '@/hooks/useThemeColor'
+import { ThemedButton } from '@/components/ui/ThemedButton'
 import { useAuthStore } from '@/store/auth'
 
 export default function Login() {
   const router = useRouter()
-  const theme = useColorScheme() ?? 'light'
-  const backgroundColor = useThemeColor('black')
-  const textColor = useThemeColor('white')
   const login = useAuthStore(state => state.login)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -57,15 +52,7 @@ export default function Login() {
     <LoginTemplate>
       <View style={styles.buttonGroup}>
         {Platform.OS === 'ios' ? (
-          <View
-            style={[
-              styles.buttonContainer,
-              {
-                borderWidth: theme === 'light' ? 0 : 1,
-                backgroundColor: theme === 'light' ? 'black' : 'transparent'
-              }
-            ]}
-          >
+          <View style={[styles.buttonContainer, { backgroundColor: Colors.black }]}>
             <AppleAuthentication.AppleAuthenticationButton
               buttonType={AppleAuthentication.AppleAuthenticationButtonType.SIGN_IN}
               buttonStyle={AppleAuthentication.AppleAuthenticationButtonStyle.BLACK}
@@ -77,30 +64,18 @@ export default function Login() {
         ) : (
           <View style={styles.formContainer}>
             <TextInput
-              style={[
-                styles.input,
-                {
-                  backgroundColor: theme === 'light' ? '#F4F4F5' : '#1F1F1F',
-                  color: theme === 'light' ? Colors.light.text : Colors.dark.text
-                }
-              ]}
+              style={[styles.input, { backgroundColor: Colors.gray[100], color: Colors.gray[900] }]}
               placeholder='Email'
-              placeholderTextColor={theme === 'light' ? Colors.light.icon : Colors.dark.icon}
+              placeholderTextColor={Colors.gray[500]}
               value={email}
               onChangeText={setEmail}
               autoCapitalize='none'
               keyboardType='email-address'
             />
             <TextInput
-              style={[
-                styles.input,
-                {
-                  backgroundColor: theme === 'light' ? '#F4F4F5' : '#1F1F1F',
-                  color: theme === 'light' ? Colors.light.text : Colors.dark.text
-                }
-              ]}
+              style={[styles.input, { backgroundColor: Colors.gray[100], color: Colors.gray[900] }]}
               placeholder='Password'
-              placeholderTextColor={theme === 'light' ? Colors.light.icon : Colors.dark.icon}
+              placeholderTextColor={Colors.gray[500]}
               value={password}
               onChangeText={setPassword}
               secureTextEntry
@@ -109,8 +84,7 @@ export default function Login() {
               title={isLoading ? 'Signing in...' : 'Sign In / Up'}
               onPress={handleEmailSignInOrUp}
               disabled={isLoading || !email || !password}
-              buttonStyle={{ ...styles.signInButton, backgroundColor }}
-              textStyle={{ color: textColor }}
+              buttonStyle={{ ...styles.signInButton }}
             />
           </View>
         )}
@@ -129,7 +103,7 @@ const styles = StyleSheet.create({
     width: '100%',
     borderRadius: 8,
     padding: 4,
-    borderColor: Colors.light.divider
+    borderColor: Colors.gray[300]
   },
 
   button: {

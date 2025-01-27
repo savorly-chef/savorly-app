@@ -1,6 +1,6 @@
 import { Pressable, StyleSheet, type PressableProps, type ViewStyle, type TextStyle } from 'react-native'
-import { useThemeColor } from '@/hooks/useThemeColor'
-import { ThemedText } from './ThemedText'
+import { Colors } from '@/constants/Colors'
+import { ThemedText } from '../ui/ThemedText'
 
 export type ThemedButtonProps = Omit<PressableProps, 'style'> & {
   variant?: 'primary' | 'secondary' | 'outline'
@@ -18,14 +18,11 @@ export function ThemedButton({
   title,
   ...rest
 }: ThemedButtonProps) {
-  const backgroundColor = useThemeColor('tintColorLight')
-  const textColor = useThemeColor('white')
-
   const getVariantStyle = (): ViewStyle => {
     switch (variant) {
       case 'primary':
         return {
-          backgroundColor,
+          backgroundColor: Colors.primary,
           borderWidth: 0
         }
       case 'secondary':
@@ -37,7 +34,7 @@ export function ThemedButton({
         return {
           backgroundColor: 'transparent',
           borderWidth: 1,
-          borderColor: backgroundColor
+          borderColor: Colors.primary
         }
     }
   }
@@ -56,10 +53,10 @@ export function ThemedButton({
   const getTextColor = () => {
     switch (variant) {
       case 'primary':
-        return textColor
+        return Colors.white
       case 'secondary':
       case 'outline':
-        return backgroundColor
+        return Colors.primary
     }
   }
 

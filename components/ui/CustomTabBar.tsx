@@ -1,18 +1,11 @@
 import { View, TouchableOpacity, StyleSheet, Platform } from 'react-native'
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs'
-
 import { Colors } from '@/constants/Colors'
-import { useColorScheme } from '@/hooks/useColorScheme'
-import { useThemeColor } from '@/hooks/useThemeColor'
-import { ThemedText } from './ThemedText'
+import { ThemedText } from '../ui/ThemedText'
 
 export function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
-  const colorScheme = useColorScheme()
-  const backgroundColor = useThemeColor('tabBG')
-  const isDark = colorScheme === 'dark'
-
   return (
-    <View style={[styles.container, isDark && styles.containerDark, { backgroundColor }]}>
+    <View style={[styles.container, shadow, { backgroundColor: Colors.gray['00'] }]}>
       {state.routes.map((route, index) => {
         const { options } = descriptors[route.key]
         const label = options.title ?? route.name
@@ -30,7 +23,7 @@ export function CustomTabBar({ state, descriptors, navigation }: BottomTabBarPro
           }
         }
 
-        const color = isFocused ? Colors[colorScheme ?? 'light'].tint : Colors[colorScheme ?? 'light'].tabIconDefault
+        const color = isFocused ? Colors.primary : Colors.gray[500]
 
         return (
           <TouchableOpacity
@@ -49,31 +42,30 @@ export function CustomTabBar({ state, descriptors, navigation }: BottomTabBarPro
   )
 }
 
+const shadow = {
+  shadowColor: Colors.black,
+  shadowOffset: { width: 0, height: 2 },
+  shadowOpacity: 0.1,
+  shadowRadius: 10,
+  elevation: 5
+}
+
 const styles = StyleSheet.create({
-  blurContainer: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0
-  },
   container: {
     flexDirection: 'row',
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: 'rgba(0, 0, 0, 0.1)',
     paddingTop: 12,
     paddingBottom: Platform.select({
-      ios: 28, // Extends under home indicator
+      ios: 28,
       android: 16
     })
   },
-  containerDark: {
-    borderTopColor: 'rgba(255, 255, 255, 0.1)'
-  },
+
   tab: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center'
   },
+
   label: {
     fontSize: 12,
     lineHeight: 24
