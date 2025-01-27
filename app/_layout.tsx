@@ -50,7 +50,7 @@ export default function RootLayout() {
           <Stack.Screen name='login' />
           <Stack.Screen name='+not-found' />
         </Stack>
-        <StatusBar style='dark' />
+        {/* <StatusBar style='dark' /> */}
       </ThemeProvider>
     </SafeAreaProvider>
   )

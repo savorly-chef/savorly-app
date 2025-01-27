@@ -1,40 +1,58 @@
-import { ScrollView, StyleSheet, View } from 'react-native'
+import { StyleSheet, View, Animated } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import { StatusBar, StatusBarStyle } from 'expo-status-bar'
+import { useRef, useEffect, useState } from 'react'
 
 import { Colors } from '@/constants/Colors'
-import { ThemedText } from '@/components/ui/ThemedText'
+import IndexHeader from '@/components/singletons/IndexHeader'
+import IndexDiscover from '@/components/singletons/IndexDiscover'
+import IndexTrending from '@/components/singletons/IndexTrending'
 
-const discoverMap = ['Spanish', 'Italian', 'Japanese', 'Mexican', 'Egyptian', 'Greek']
+const SCROLL_THRESHOLD = 50
 
 export default function HomeScreen() {
-  return (
-    <SafeAreaView edges={['top']} style={[styles.safeArea, { backgroundColor: Colors.gray[100] }]}>
-      <ScrollView contentContainerStyle={styles.container}>
-        <View style={styles.section}>
-          <ThemedText style={{ marginBottom: 8 }} type='title'>
-            Discover
-          </ThemedText>
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            style={styles.iconScroll}
-            contentContainerStyle={styles.iconContainer}
-          >
-            {discoverMap.map((button, index) => (
-              <View key={index} style={styles.iconWrapper}>
-                <ThemedText style={{ fontSize: 13 }}>{button}</ThemedText>
-              </View>
-            ))}
-          </ScrollView>
-        </View>
+  const scrollY = useRef(new Animated.Value(0)).current
+  const animatedOpacity = useRef(new Animated.Value(0)).current
+  const [statusBarStyle, setStatusBarStyle] = useState<StatusBarStyle>('light')
 
-        <View style={styles.section}>
-          <ThemedText style={{ marginBottom: 8 }} type='title'>
-            Trending
-          </ThemedText>
+  const handleScroll = Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], { useNativeDriver: false })
+
+  useEffect(() => {
+    scrollY.addListener(({ value }) => {
+      Animated.timing(animatedOpacity, {
+        toValue: value > SCROLL_THRESHOLD ? 1 : 0,
+        duration: 4,
+        useNativeDriver: true
+      }).start()
+
+      setStatusBarStyle(value > SCROLL_THRESHOLD ? 'dark' : 'light')
+    })
+
+    return () => {
+      scrollY.removeAllListeners()
+    }
+  }, [])
+
+  const backgroundColor = animatedOpacity.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['#000000', Colors.gray[100]]
+  })
+
+  return (
+    <Animated.View style={{ flex: 1, backgroundColor }}>
+      <SafeAreaView edges={['top']} style={{ flex: 1 }}>
+        <View style={{ flex: 1, backgroundColor: Colors.gray[100] }}>
+          <StatusBar animated style={statusBarStyle} />
+          <Animated.ScrollView contentContainerStyle={styles.wrapper} onScroll={handleScroll} scrollEventThrottle={16}>
+            <IndexHeader />
+            <View style={styles.container}>
+              <IndexDiscover />
+              <IndexTrending />
+            </View>
+          </Animated.ScrollView>
         </View>
-      </ScrollView>
-    </SafeAreaView>
+      </SafeAreaView>
+    </Animated.View>
   )
 }
 
@@ -42,33 +60,18 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1
   },
-  container: {
+
+  wrapper: {
     display: 'flex',
     flexDirection: 'column',
+    backgroundColor: Colors.gray[100],
+    minHeight: '100%'
+  },
+
+  container: {
     gap: 30,
-    padding: 16
-  },
-
-  section: {},
-
-  header: {
+    padding: 16,
     display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    marginBottom: 10
-  },
-
-  iconScroll: {
-    flexGrow: 0
-  },
-
-  iconContainer: {
-    gap: 20
-  },
-
-  iconWrapper: {
-    justifyContent: 'center',
-    alignItems: 'center'
+    flexDirection: 'column'
   }
 })
