@@ -9,7 +9,8 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.120356aa.savorly"
     },
     "android": {
       "adaptiveIcon": {
@@ -24,6 +25,8 @@
     },
     "plugins": [
       "expo-router",
+      "expo-sqlite",
+      "expo-apple-authentication",
       [
         "expo-splash-screen",
         {
@@ -33,11 +36,25 @@
           "backgroundColor": "#ffffff"
         }
       ],
-      "expo-sqlite",
-      "expo-apple-authentication"
+      [
+        "expo-font",
+        {
+          "fonts": [
+            "./assets/fonts/PlusJakartaSans.ttf"
+          ]
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "0c7304e0-378a-4306-bead-7c6b4975f9e5"
+      }
     }
   }
 }

@@ -1,0 +1,19 @@
+{
+  "common": {
+    "discover": "Discover",
+    "forYou": "For You"
+  },
+  "cuisines": {
+    "american": "American",
+    "italian": "Italian",
+    "japanese": "Japanese",
+    "mexican": "Mexican",
+    "french": "French",
+    "greek": "Greek",
+    "chinese": "Chinese",
+    "thai": "Thai",
+    "indian": "Indian",
+    "vietnamese": "Vietnamese",
+    "korean": "Korean"
+  }
+}

@@ -6,13 +6,12 @@ import { useRef, useEffect, useState } from 'react'
 import { Colors } from '@/constants/Colors'
 import IndexHeader from '@/components/singletons/IndexHeader'
 import IndexDiscover from '@/components/singletons/IndexDiscover'
-import IndexTrending from '@/components/singletons/IndexTrending'
 
 const SCROLL_THRESHOLD = 50
 
-export default function HomeScreen() {
-  const scrollY = useRef(new Animated.Value(0)).current
-  const animatedOpacity = useRef(new Animated.Value(0)).current
+export default function HomeScreen(): JSX.Element {
+  const scrollY: Animated.Value = useRef(new Animated.Value(0)).current
+  const animatedOpacity: Animated.AnimatedValue = useRef(new Animated.Value(0)).current
   const [statusBarStyle, setStatusBarStyle] = useState<StatusBarStyle>('light')
 
   const handleScroll = Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], { useNativeDriver: false })
@@ -35,7 +34,7 @@ export default function HomeScreen() {
 
   const backgroundColor = animatedOpacity.interpolate({
     inputRange: [0, 1],
-    outputRange: ['#000000', Colors.gray[100]]
+    outputRange: [Colors.primary, Colors.gray[100]]
   })
 
   return (
@@ -43,11 +42,18 @@ export default function HomeScreen() {
       <SafeAreaView edges={['top']} style={{ flex: 1 }}>
         <View style={{ flex: 1, backgroundColor: Colors.gray[100] }}>
           <StatusBar animated style={statusBarStyle} />
-          <Animated.ScrollView contentContainerStyle={styles.wrapper} onScroll={handleScroll} scrollEventThrottle={16}>
+          <Animated.ScrollView
+            contentContainerStyle={styles.wrapper}
+            onScroll={handleScroll}
+            scrollEventThrottle={16}
+            bounces={false}
+            overScrollMode='never'
+          >
             <IndexHeader />
             <View style={styles.container}>
               <IndexDiscover />
-              <IndexTrending />
+              {/* <IndexTrending />
+              <IndexForYou /> */}
             </View>
           </Animated.ScrollView>
         </View>
@@ -70,7 +76,7 @@ const styles = StyleSheet.create({
 
   container: {
     gap: 30,
-    padding: 16,
+    paddingVertical: 20,
     display: 'flex',
     flexDirection: 'column'
   }

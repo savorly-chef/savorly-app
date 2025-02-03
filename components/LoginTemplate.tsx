@@ -19,7 +19,7 @@ export default function LoginTemplate({ children }: { children: React.ReactNode 
       <View style={styles.container}>
         <View style={styles.contentContainer}>
           <View style={styles.header}>
-            <Logo color={Colors.black} />
+            <Logo color={Colors.white} />
             <ThemedText style={styles.subtitle}>Sign in to discover, create and share amazing recipes</ThemedText>
           </View>
         </View>
@@ -68,7 +68,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 24,
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
+    backgroundColor: Colors.black
   },
   contentContainer: {
     flex: 1,

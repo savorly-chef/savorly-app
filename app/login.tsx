@@ -101,9 +101,10 @@ const styles = StyleSheet.create({
 
   buttonContainer: {
     width: '100%',
-    borderRadius: 8,
-    padding: 4,
-    borderColor: Colors.gray[300]
+    borderRadius: 10,
+    padding: 6,
+    borderColor: Colors.gray[700],
+    borderWidth: 1
   },
 
   button: {

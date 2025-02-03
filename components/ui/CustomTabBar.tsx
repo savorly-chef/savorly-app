@@ -1,14 +1,12 @@
 import { View, TouchableOpacity, StyleSheet, Platform } from 'react-native'
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs'
 import { Colors } from '@/constants/Colors'
-import { ThemedText } from '../ui/ThemedText'
 
 export function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
   return (
     <View style={[styles.container, shadow, { backgroundColor: Colors.gray['00'] }]}>
       {state.routes.map((route, index) => {
         const { options } = descriptors[route.key]
-        const label = options.title ?? route.name
         const isFocused = state.index === index
 
         const onPress = () => {
@@ -34,7 +32,6 @@ export function CustomTabBar({ state, descriptors, navigation }: BottomTabBarPro
             accessibilityState={isFocused ? { selected: true } : {}}
           >
             {options.tabBarIcon?.({ focused: isFocused, color, size: 28 })}
-            <ThemedText style={[styles.label, { color }]}>{label}</ThemedText>
           </TouchableOpacity>
         )
       })}
